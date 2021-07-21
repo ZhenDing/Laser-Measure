@@ -27,8 +27,8 @@ bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/, char p
 {
 
 	/** 临时变量,将制定参数转化为字符串形式,以构造DCB结构 */
-	char szDCBparam[50];
-	sprintf_s(szDCBparam, "baud=%d parity=%c data=%d stop=%d", baud, parity, databits, stopsbits);
+	//char szDCBparam[50] = {0};
+	//sprintf_s(szDCBparam, "baud=%d parity=%c data=%d stop=%d", baud, parity, databits, stopsbits);
 
 	/** 打开指定串口,该函数内部已经有临界区保护,上面请不要加保护 */
 	if (!openPort(portNo))
@@ -73,8 +73,16 @@ bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/, char p
 			//}
 
 			/** 获取当前串口配置参数,并且构造串口DCB参数 */
-		bool TempBuile = BuildCommDCB(szDCBparam, &dcb);
-		bIsSuccess = GetCommState(m_hComm, &dcb) && TempBuile;
+		//bool TempBuile = BuildCommDCB(szDCBparam, &dcb);
+		//bIsSuccess = GetCommState(m_hComm, &dcb) && TempBuile;
+		bIsSuccess = GetCommState(m_hComm, &dcb);
+		dcb.BaudRate = 9600; //波特率为9600
+
+		dcb.ByteSize = 8; //每个字节有8位
+
+		dcb.Parity = NOPARITY; //无奇偶校验位
+
+		dcb.StopBits = TWOSTOPBITS; //两个停止位
 		/** 开启RTS flow控制 */
 		dcb.fRtsControl = RTS_CONTROL_ENABLE;
 

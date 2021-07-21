@@ -8,7 +8,7 @@ int main(int argc, _TCHAR* argv[])
 	//unsigned char* ReadCMD = new unsigned char[4];//
 	char recvBuf[11] = { 0 };
 
-	if (!mySerialPort.InitPort(9, CBR_9600, 'N', 8, 1, EV_RXCHAR))//是否打开串口，3就是你外设连接电脑的com口，可以在设备管理器查看，然后更改这个参数
+	if (!mySerialPort.InitPort(5, CBR_9600, 'N', 8, 1, EV_RXCHAR))//是否打开串口，3就是你外设连接电脑的com口，可以在设备管理器查看，然后更改这个参数
 	{
 		std::cout << "initPort fail !" << std::endl;
 	}
@@ -17,7 +17,7 @@ int main(int argc, _TCHAR* argv[])
 		std::cout << "initPort success !" << std::endl;
 	}
 
-
+	Sleep(100);
 	//std::cout << mySerialPort.WriteData(BDCMD, 5) << "BD Command" << endl;
 	//unsigned char cRecved[11];
 	while (1)
