@@ -1,4 +1,3 @@
-
 //#include "StdAfx.h"  
 #include "Serial_C_T.h"  
 /** 线程退出标志 */
@@ -441,7 +440,7 @@ bool CSerialPort::readFromComm(int ID /*ID of laser*/, unsigned char(&readCom)[1
 			unsigned char cRecved[11] = { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
 			if (this->Read_Multi_Char(cRecved, 11) == true)
 			{
-				std::cout << "Process Data1:";
+				//std::cout << "Process Data1:";
 				for (int i = 0; i < 11; i++)
 				{
 					readCom[i] = cRecved[i];
@@ -539,32 +538,34 @@ UINT WINAPI CSerialPort::Listen_Laser_Thread(void* pParam)
 	Sleep(3000);
 	// 线程循环,轮询方式读取串口数据  
 	while (!pSerialPort->s_bExit)
-	{  
+	{
+		std::cout << "Next" << endl;
 		Flagg = 1;
 		pSerialPort->WriteData(BDCMD, 5);
 		Sleep(100);
 		while (Flagg)
 		{
 			int Pos = pSerialPort->find_zero(pSerialPort->Read_Flag, 0);
+			std::cout << "POS:" << Pos << endl;
 			if (Pos == -1)
 			{
 				Flagg = 0;
-				memset(pSerialPort->Read_Flag,0,4);
-				std::cout << pSerialPort->Read_Flag << endl;
+				memset(pSerialPort->Read_Flag,0,sizeof(int)*4);
 			}
 			else
 			{
 				resu = pSerialPort->readFromComm(Pos, cRecved, 4);
 				if (resu == 1)
 				{
+					//std::cout << Pos << "Read Succ";
 					bool res_de = pSerialPort->decoder(cRecved, Result);
 					if (res_de)
 					{
 						int read_id = int(cRecved[0]) - 48;
-						pSerialPort->Distance[read_id] = Result;
-						pSerialPort->Read_Flag[read_id] = 1;
+						pSerialPort->Distance[Pos] = Result;
+						pSerialPort->Read_Flag[Pos] = 1;
 					}
-					std::cout << Result << endl;
+					//std::cout << Result << endl;
 				}
 
 			}
